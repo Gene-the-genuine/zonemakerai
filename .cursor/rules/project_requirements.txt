@@ -1,0 +1,33 @@
+# Core ML Framework
+torch>=1.9.0 
+torchvision>=0.10.0
+numpy>=1.21.0
+
+# Backend Framework
+fastapi>=0.68.0
+uvicorn>=0.15.0
+pydantic>=1.8.0
+tqdm
+
+# Windows API
+pywin32>=228
+psutil>=5.8.0
+
+# Frontend
+# PySide6>=6.4.0  
+PySide6[all]>=6.4.0
+PySide6-Addons>=6.4.0
+
+# HTTP Client
+requests>=2.25.0
+
+# Data Processing
+scikit-learn>=1.0.0
+matplotlib>=3.4.0
+
+# Optional: ONNX Support
+onnx>=1.10.0
+onnxruntime>=1.8.0
+
+# Development Tools
+python-dotenv>=0.19.0

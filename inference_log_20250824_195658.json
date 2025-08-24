@@ -1,0 +1,26 @@
+{
+  "timestamp": "2025-08-24T19:56:58.891117",
+  "inference_stats": {
+    "total_predictions": 31,
+    "successful_predictions": 0,
+    "failed_predictions": 31,
+    "average_inference_time": 0.22968065354131884,
+    "last_prediction_time": 1756033018.099508
+  },
+  "window_handle_map": {
+    "Cursor.exe_trainer.py - zonemakerai - Cursor": 329670,
+    "WindowsTerminal.exe_명령 프롬프트 - python  run.py --mode inference --duration 60": 4720506,
+    "explorer.exe_ml - 파일 탐색기": 722948,
+    "Cursor.exe_inference.py - Zonemaker AI - Cursor": 1312298,
+    "SystemSettings.exe_설정": 1246700,
+    "ApplicationFrameHost.exe_설정": 329712,
+    "TextInputHost.exe_Windows 입력 환경": 197622,
+    "chrome.exe_AI Training on 10-Minute Data Chunks - Claude - Chrome": 1246024,
+    "ClickToDo.exe_수행하려면 클릭(미리 보기)": 66096,
+    "explorer.exe_Program Manager": 65902
+  },
+  "buffer_info": {
+    "window_buffer_size": 30,
+    "activity_buffer_size": 30
+  }
+}

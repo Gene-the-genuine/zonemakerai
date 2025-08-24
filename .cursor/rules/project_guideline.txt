@@ -1,0 +1,92 @@
+
+## 프로젝트 개요
+Zonemaker AI는 MS Copilot PC의 Snapdragon NPU를 활용하여 실시간으로 사용자의 작업 환경에 최적화된 윈도우 배열을 수행하는 AI 시스템입니다.
+
+## 주요 기능
+- **실시간 데이터 수집**: Windows API를 통한 사용자 행동 모니터링
+- **AI 모델 학습**: Vision Transformer 기반 윈도우 배열 예측 모델
+- **NPU 최적화**: Snapdragon NPU 최적화된 실시간 추론
+- **직관적 UI**: PyQt 기반 사용자 친화적 인터페이스
+- **Workstation 관리**: 사용자 정의 작업 환경 생성 및 관리
+
+## project folder architecture
+zonemakerai/
+├── backend/
+│   ├── api/
+│   │   └── main.py
+│   ├── core/
+│   │   ├── data_collector.py
+│   │   ├── workstation.py
+│   │   └── window_manager.py
+│   ├── ml/
+│   │   ├── model.py
+│   │   ├── trainer.py
+│   │   ├── inference.py
+│   │   └── npu_converter.py
+│   └── config/
+│       └── settings.py
+├── frontend/
+│   ├── pages/
+│   │   ├── home_page.py
+│   │   ├── create_workstation_page.py
+│   │   ├── train_run_page.py
+│   │   ├── train_page.py
+│   │   └── run_page.py
+│   ├── main.py
+│   └── api_client.py
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   └── models/
+│       └── npu_converted/
+├── deploy/
+│   ├── dist/
+│   └── installer.nsi
+├── benchmark_results/
+├── run.py
+
+대회 이름 : Edge AI Developers Hackathon
+
+대회 목표 : 퀄컴의 스냅드래곤 칩이 탑재된 MS copilot PC에서, NPU를 활용하여 로컬에서 AI 연산을 수행하는, 혁신적인 아이디어의 프로덕트를 개발.
+
+프로덕트 이름 : Zonemaker AI 
+
+프로덕트 목표 : MS copilot PC환경에서, 사용자의 작업 환경에 맞추어 실시간으로 최적의 ‘활성 프로그램 창 배열’을 수행. 
+
+##BackEnd & ML Pipeline
+
+‘활성 프로그램 창 배열’의 구현 방식 :
+
+1. Zonemaker AI 실행 후, Workstation 생성. (Workstation : 사용자가 하나의 작업(데이터 분석, 영상 편집 등)을 수행하기 위해 실행하는 프로그램들의 집합을 의미한다. )
+2. Workstation 별로 시계열 ML 모델 생성, 사용자의 행동(클릭, 창 크기 변경 등) 정보를 Windows API를 활용하여 데이터로 수집한 뒤 tensor화하여, ML에 학습. target label은 프로그램 별 (x, y, w, h, z-order)
+3. 모델을 NPU 환경에서 실행할 수 있도록 변환 (중요 : qai-hub 임포트하여 compile 등 기능을 활용)
+4. 로컬 NPU 환경에서 모델 실행, 매 1초마다 Workstation 내 프로그램의 최적의 창 배열을 수행
+5. 종료
+
+ML input Data Schema :
+
+[ timestamp, program_id, 창 활성상태, 창 최소화여부, 창 최대화 여부, Click 횟수, Keystroke 횟수, 창 w 축소 횟수, 창 w 확대 횟수, 창 h 축소 횟수, 창 h 확대 횟수, 휠 스크롤 다운 횟수, 휠 스크롤 업 횟수, x, y, w, h, z-order ] 
+
+즉, 매 1초마다 마우스 및 키보드 입력 이벤트를 감지하고, 창 및 화면 정보를 받아준다.   
+
+ML Train & Inference Rule :
+
+- 참고사항 : “ 나는 ML rule 전문가가 아니기에, 더 적절한 방식이 있으면 수정을 제안해줘. “
+
+10분의 time 구간에 대하여 데이터를 수집, 학습데이터로 사용함. 이때, 해당 데이터를 마치 ‘spectrogram’과 같은 image 형태로 변환하여, 경량화된 ViT 모델을 적용함으로써 target label에 대한 학습을 진행. window(또는 패치)의 크기는 알맞게 정함. inference 단계에서는, train 단계에서 사용한 모델 학습 방식을 바탕으로 매초마다 target label 생성.
+
+주요 제약 조건 : 매 1 초마다 inference 결과가 화면 적용되어야 하기에, 0.5초 내외로 ML 연산이 수행되어야 함.
+
+##FrontEnd
+
+5개의 화면을 구현한다(가감 가능). 추후, 디자인 요소(로고, 배경이미지를 손쉽게 추가할 수 있도록 고려 필요). 라이브러리는 C++ 또는 PyQT 등을 자유롭게 사용해도 되나, 빌드 및 배포 단계에서 환경제약에 따른 오류가 없도록 유의할 것.
+
+Page1 (Home 화면 ) : Logo Image, Text(”Zonemaker AI”), Text(”Your Workstations”), Workstation List View, Button(”Create new Workstation”), Button(”Select this Workstation”)
+
+Page2 (Create Workstation 화면) : Text(”Run all the programs you need, for the task”), Running Program List View, Button(”Save”)
+
+Page3 (Workstation model train&run 화면) : Text(”Choose ‘Train’ if you want to train model, else ‘Run’ to start Zonemaker AI”), Button(”Train”), Button(”Run”)
+
+Page4 (Train 화면) : Text(”Collect & Train 10mins Data.. Please wait”), Progress Bar
+
+Page5 (Run 화면) : Text(”Zonemaker AI is now Running”), Button(”stop & exit”)

@@ -1,0 +1,18 @@
+{
+  "timestamp": "2025-08-24T20:13:30.909829",
+  "inference_stats": {
+    "total_predictions": 1,
+    "successful_predictions": 1,
+    "failed_predictions": 0,
+    "average_inference_time": 0.33774399757385254,
+    "last_prediction_time": 1756034010.2512884
+  },
+  "buffer_info": {
+    "window_buffer_size": 30,
+    "activity_buffer_size": 30
+  },
+  "system_info": {
+    "inference_active": false,
+    "thread_alive": false
+  }
+}
